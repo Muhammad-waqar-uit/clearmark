@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Clearmark: Bookmark & Extension Manager",
+  "version": "0.1.0",
+  "description": "Manage all your bookmarks and browser extensions from one place.",
+  "permissions": ["bookmarks", "storage", "tabs", "management"],
+  "optional_host_permissions": ["<all_urls>"],
+  "action": {
+    "default_popup": "src/popup/index.html"
+  },
+  "options_page": "src/options/index.html",
+  "background": {
+    "service_worker": "src/background/service-worker.ts",
+    "type": "module"
+  },
+  "icons": {
+    "16": "public/icons/icon-16.png",
+    "32": "public/icons/icon-32.png",
+    "48": "public/icons/icon-48.png",
+    "128": "public/icons/icon-128.png"
+  }
+}
