@@ -31,9 +31,9 @@ The build output was checked with a script that resolves every path referenced b
 
 ## Still manual (needs a human in Chrome)
 
-- Load `dist/` as an unpacked extension on a clean profile and click through:
-  bookmark CRUD, drag-and-drop, link check permission prompt, extension
-  enable/disable/remove, popup save, options save, uninstall URL.
+- Run [TESTING.md](TESTING.md) on a clean profile: load `dist/` as an unpacked extension
+  and click through the nine sections — popup, browsing, edits, tags, cleanup, extensions,
+  import/export, options, reload sweep. It states the expected result for each check.
 - Publish to the Chrome Web Store (listing, screenshots, privacy justification).
 
 ## History

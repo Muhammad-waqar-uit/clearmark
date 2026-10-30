@@ -69,6 +69,7 @@ ESLint, Husky.
 - [Limitations](docs/LIMITATIONS.md)
 - [Plan](docs/PLAN.md)
 - [Progress](docs/PROGRESS.md)
+- [Testing in Chrome](docs/TESTING.md)
 - [Requirements](docs/REQUIREMENTS.pdf)
 
 ## License
