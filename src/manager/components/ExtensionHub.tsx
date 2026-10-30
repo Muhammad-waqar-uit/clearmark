@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   addWantedExtension,
   getWantedExtensions,
@@ -10,22 +10,18 @@ import {
   isManageable,
   isPolicyManaged,
   listInstalled,
-  matchesFilter,
   parseExtensionId,
   parseWantedList,
   permissionWarnings,
-  removeMany,
   removeExtension,
   setExtensionEnabled,
-  setManyEnabled,
   storeUrl,
   wantedToJson,
-  type ExtensionFilter,
 } from '../../lib/extensions'
 import { downloadFile } from '../../lib/importer'
 import type { WantedExtension } from '../../lib/types'
 import { EmptyState, LetterAvatar, Modal } from './ui'
-import { Notice, ProgressBar } from './Feedback'
+import { Notice } from './Feedback'
 
 type ExtensionHubProps = {
   explained: boolean
@@ -37,10 +33,6 @@ export function ExtensionHub({ explained, onAcknowledge }: ExtensionHubProps) {
   const [installed, setInstalled] = useState<chrome.management.ExtensionInfo[]>([])
   const [loading, setLoading] = useState(true)
   const [query, setQuery] = useState('')
-  const [filter, setFilter] = useState<ExtensionFilter>('all')
-  const [selected, setSelected] = useState<Set<string>>(new Set())
-  const [busy, setBusy] = useState('')
-  const [progress, setProgress] = useState({ done: 0, total: 0 })
   const [message, setMessage] = useState<{ tone: 'info' | 'success' | 'error'; text: string } | null>(
     null
   )
@@ -86,69 +78,6 @@ export function ExtensionHub({ explained, onAcknowledge }: ExtensionHubProps) {
       active = false
     }
   }, [detail])
-
-  const visible = useMemo(
-    () => installed.filter((ext) => matchesFilter(ext, filter, query)),
-    [installed, filter, query]
-  )
-
-  const manageableVisible = visible.filter(isManageable)
-  const allVisibleSelected =
-    manageableVisible.length > 0 && manageableVisible.every((ext) => selected.has(ext.id))
-
-  const toggleSelected = (id: string): void => {
-    setSelected((current) => {
-      const next = new Set(current)
-      if (next.has(id)) next.delete(id)
-      else next.add(id)
-      return next
-    })
-  }
-
-  const selectAllVisible = (checked: boolean): void => {
-    setSelected((current) => {
-      const next = new Set(current)
-      for (const ext of manageableVisible) {
-        if (checked) next.add(ext.id)
-        else next.delete(ext.id)
-      }
-      return next
-    })
-  }
-
-  const runBulk = (kind: 'enable' | 'disable' | 'remove'): void => {
-    void (async () => {
-      const items = installed.filter((ext) => selected.has(ext.id))
-      if (items.length === 0) return
-      if (kind === 'remove' && !window.confirm(`Remove ${items.length} extension(s)? Chrome will ask for each one.`)) {
-        return
-      }
-
-      setMessage(null)
-      setBusy(kind === 'remove' ? 'Removing…' : kind === 'enable' ? 'Enabling…' : 'Disabling…')
-      setProgress({ done: 0, total: items.length })
-
-      const options = {
-        onProgress: (done: number, total: number) => setProgress({ done, total }),
-      }
-      const result =
-        kind === 'remove'
-          ? await removeMany(items, options)
-          : await setManyEnabled(items, kind === 'enable', options)
-
-      setSelected(new Set())
-      setBusy('')
-      await load()
-
-      const parts = [`${result.changed} changed`]
-      if (result.skipped > 0) parts.push(`${result.skipped} protected`)
-      if (result.failed.length > 0) parts.push(`${result.failed.length} failed`)
-      setMessage({
-        tone: result.failed.length > 0 ? 'error' : 'success',
-        text: parts.join(' · '),
-      })
-    })()
-  }
 
   const toggleOne = (ext: chrome.management.ExtensionInfo): void => {
     void (async () => {
@@ -216,8 +145,9 @@ export function ExtensionHub({ explained, onAcknowledge }: ExtensionHubProps) {
     })()
   }
 
-  const enabledCount = installed.filter((ext) => ext.enabled && ext.type === 'extension').length
-  const disabledCount = installed.filter((ext) => !ext.enabled && ext.type === 'extension').length
+  const visible = installed.filter((ext) =>
+    ext.type === 'extension' && ext.name.toLowerCase().includes(query.trim().toLowerCase())
+  )
 
   return (
     <div className="space-y-3">
@@ -248,58 +178,7 @@ export function ExtensionHub({ explained, onAcknowledge }: ExtensionHubProps) {
             value={query}
             onChange={(event) => setQuery(event.target.value)}
           />
-          <label htmlFor="extension-filter" className="sr-only">
-            Filter extensions
-          </label>
-          <select
-            id="extension-filter"
-            className="select"
-            value={filter}
-            onChange={(event) => setFilter(event.target.value as ExtensionFilter)}
-          >
-            <option value="all">All ({enabledCount + disabledCount})</option>
-            <option value="enabled">Enabled ({enabledCount})</option>
-            <option value="disabled">Disabled ({disabledCount})</option>
-          </select>
-          <span className="text-xs text-slate-500 dark:text-slate-400">
-            {selected.size} selected
-          </span>
-          <div className="ml-auto flex flex-wrap items-center gap-2">
-            <button
-              type="button"
-              className="btn"
-              onClick={() => runBulk('enable')}
-              disabled={selected.size === 0 || busy !== ''}
-            >
-              Enable
-            </button>
-            <button
-              type="button"
-              className="btn"
-              onClick={() => runBulk('disable')}
-              disabled={selected.size === 0 || busy !== ''}
-            >
-              Disable
-            </button>
-            <button
-              type="button"
-              className="btn btn-danger"
-              onClick={() => runBulk('remove')}
-              disabled={selected.size === 0 || busy !== ''}
-            >
-              Remove
-            </button>
-          </div>
         </div>
-
-        {busy !== '' ? (
-          <div className="mt-3 space-y-1">
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              {busy} {progress.done} of {progress.total}
-            </p>
-            <ProgressBar done={progress.done} total={progress.total} />
-          </div>
-        ) : null}
 
         {message ? (
           <div className="mt-3">
@@ -309,24 +188,12 @@ export function ExtensionHub({ explained, onAcknowledge }: ExtensionHubProps) {
       </div>
 
       <div className="card p-2">
-        <div className="flex items-center gap-2 px-2 py-1.5 text-xs text-slate-500 dark:text-slate-400">
-          <input
-            type="checkbox"
-            className="h-4 w-4 accent-brand-600"
-            checked={allVisibleSelected}
-            onChange={(event) => selectAllVisible(event.target.checked)}
-            aria-label="Select all shown extensions"
-            disabled={manageableVisible.length === 0}
-          />
-          <span>Select all shown</span>
-        </div>
-
         {loading ? (
           <EmptyState title="Loading installed extensions…" />
         ) : visible.length === 0 ? (
           <EmptyState
             title="No extensions match"
-            hint="Try another search term or switch the filter."
+            hint="Try another search term."
           />
         ) : (
           <ul className="space-y-1" aria-label="Installed extensions">
@@ -338,14 +205,6 @@ export function ExtensionHub({ explained, onAcknowledge }: ExtensionHubProps) {
                   key={ext.id}
                   className="flex flex-wrap items-center gap-2 rounded-md border border-transparent px-2 py-1.5 hover:border-slate-200 hover:bg-slate-50 dark:hover:border-slate-700 dark:hover:bg-slate-800/60"
                 >
-                  <input
-                    type="checkbox"
-                    className="h-4 w-4 accent-brand-600"
-                    checked={selected.has(ext.id)}
-                    onChange={() => toggleSelected(ext.id)}
-                    disabled={!manageable}
-                    aria-label={`Select ${ext.name}`}
-                  />
                   {icon ? (
                     <img src={icon} alt="" className="h-7 w-7 shrink-0 rounded" />
                   ) : (

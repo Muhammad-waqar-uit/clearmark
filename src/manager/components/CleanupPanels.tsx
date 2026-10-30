@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   countExtras,
   extrasKeeping,
@@ -148,6 +148,13 @@ export function DeadLinksPanel({ bookmarks, onDeleteBookmarks, onOpen }: DeadLin
   const [running, setRunning] = useState(false)
   const [error, setError] = useState('')
   const cancelled = useRef(false)
+
+  // Refresh results when bookmarks change (after a delete) so stale entries drop out.
+  useEffect(() => {
+    setResults(null)
+    setProgress({ done: 0, total: 0 })
+    setError('')
+  }, [bookmarks])
 
   const start = (): void => {
     void (async () => {
