@@ -1,8 +1,6 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "useUnknownInStringParameters": true,
-    "useDefineForClassFields": true,
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "moduleResolution": "bundler",
@@ -10,7 +8,6 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "noFallthroughCaseInSwitch": true,
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
@@ -22,7 +19,6 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
     "types": ["vite/client"]
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.vue", "**/*.html"],

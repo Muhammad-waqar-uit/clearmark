@@ -5,7 +5,7 @@ import { useStorage } from '../lib/storage'
 import { findDuplicates, normalizeUrl } from '../lib/duplicates'
 import { exportBookmarks, importFromNetscape } from '../lib/exportImport'
 import { BookmarkMeta, Storage } from '../lib/types'
-import { useFocusEffect } from '@react-native/hooks'
+import { useEffect } from 'react'
 
 const SearchBar = () => {
   const [query, setQuery] = useState('')
@@ -198,9 +198,10 @@ export function ManagerPage() {
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null)
   const [view, setView] = useState<'bookmarks' | 'duplicates' | 'deadlinks' | 'importexport'>('bookmarks')
 
-  useFocusEffect(() => {
+  useEffect(() => {
     loadBookmarks()
-  })
+  }, [loadBookmarks])
+
 
   const handleFolderSelect = (folderId: string) => {
     setSelectedFolder(folderId)
