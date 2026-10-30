@@ -2,7 +2,7 @@
 
 Last updated: 2026-10-30
 
-## Status: all nine milestones implemented
+## Status: all ten milestones implemented
 
 | # | Milestone | Status | What exists now |
 |---|-----------|--------|-----------------|
@@ -14,14 +14,15 @@ Last updated: 2026-10-30
 | 6 | Import & export | ✅ Done | JSON export with folder paths/tags/notes, Netscape HTML export, JSON and HTML import with preview and destination picker, imports default to an "Imported YYYY-MM-DD" folder |
 | 7 | Extension hub | ✅ Done | Installed extension list with icons, search, enabled/disabled filter, detail dialog with permissions and warnings, enable/disable, remove, queued bulk enable/disable/remove with progress, policy/managed detection, Clearmark excluded from bulk actions, saved install list with store links, list export/import |
 | 8 | Popup & settings | ✅ Done | Popup quick search (top 10), "Add page" with folder picker, manager shortcut; options page for theme, default sort, uninstall feedback URL, management explanation reset, self-removal |
-| 9 | Polish & release | ✅ Done | 35 Vitest tests (unit + jsdom UI smoke tests), zero lint problems, strict typecheck, production build, documentation, generated icon set |
+| 9 | Polish & release | ✅ Done | 42 Vitest tests (unit, windowing math, jsdom UI smoke tests), zero lint problems, strict typecheck, production build, documentation, generated icon set |
+| 10 | Large libraries | ✅ Done | Windowed bookmark list: only rows near the viewport render, dynamic row measurement, spacers for the rest, full render while the tag editor is open |
 
 ## Verification run
 
 ```bash
 pnpm typecheck   # tsc --noEmit, no errors
 pnpm lint        # eslint, 0 errors, 0 warnings
-pnpm test        # 4 files, 35 tests passed
+pnpm test        # 5 files, 42 tests passed
 pnpm build       # dist/ with manifest.json, service-worker.js, three pages, icons
 ```
 

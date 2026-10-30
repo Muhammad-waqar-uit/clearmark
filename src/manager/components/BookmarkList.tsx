@@ -3,7 +3,11 @@ import { domainOf } from '../../lib/bookmarks'
 import type { BookmarkMeta } from '../../lib/types'
 import { DRAG_TYPE } from '../drag'
 import type { BookmarkWithMeta, ViewMode } from '../filters'
+import { useWindowedList } from '../useWindowedList'
 import { EmptyState, LetterAvatar } from './ui'
+
+/** Row height used before the real value is measured, per view mode. */
+const ROW_ESTIMATE: Record<ViewMode, number> = { list: 62, compact: 44 }
 
 type BookmarkListProps = {
   items: BookmarkWithMeta[]
@@ -42,6 +46,13 @@ export function BookmarkList({
   const [editingId, setEditingId] = useState<string | null>(null)
   const [draftTags, setDraftTags] = useState('')
   const [draftNote, setDraftNote] = useState('')
+  // While the tag/note editor is open the list renders in full, so scrolling
+  // cannot unmount the row being edited.
+  const listWindow = useWindowedList({
+    count: items.length,
+    estimate: ROW_ESTIMATE[view],
+    enabled: editingId === null,
+  })
 
   const allSelected = items.length > 0 && items.every((item) => selected.has(item.id))
   const someSelected = items.some((item) => selected.has(item.id))
@@ -93,14 +104,24 @@ export function BookmarkList({
         <span>Select all</span>
       </div>
 
-      <ul className="flex-1 space-y-1 overflow-auto pb-2" aria-label="Bookmarks">
-        {items.map((bookmark) => {
+      <ul
+        ref={listWindow.scrollRef}
+        className="flex-1 overflow-auto pb-2"
+        aria-label="Bookmarks"
+        aria-rowcount={items.length}
+      >
+        {listWindow.padTop > 0 ? (
+          <li aria-hidden="true" style={{ height: listWindow.padTop }} />
+        ) : null}
+
+        {items.slice(listWindow.start, listWindow.end).map((bookmark, offset) => {
+          const index = listWindow.start + offset
           const isSelected = selected.has(bookmark.id)
           const isEditing = editingId === bookmark.id
           const host = domainOf(bookmark.url)
 
           return (
-            <li key={bookmark.id}>
+            <li key={bookmark.id} ref={listWindow.rowRef(index)} className="pb-1">
               <div
                 draggable
                 onDragStart={(event) => {
@@ -226,6 +247,10 @@ export function BookmarkList({
             </li>
           )
         })}
+
+        {listWindow.padBottom > 0 ? (
+          <li aria-hidden="true" style={{ height: listWindow.padBottom }} />
+        ) : null}
       </ul>
     </div>
   )

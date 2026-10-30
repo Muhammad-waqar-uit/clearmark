@@ -58,6 +58,9 @@ Open the manager from the popup.
 - [ ] Sort and the list/compact toggle change the order and density.
 - [ ] Create a bookmark in Chrome (Ctrl+D on a page): the manager list updates without a
       reload.
+- [ ] **Large library:** a folder with hundreds of bookmarks scrolls smoothly. Scroll to
+      the middle and back: rows do not jump, and the scrollbar thumb does not shrink as
+      you move (that would mean spacer heights are wrong).
 
 ## 4. Manager: edits
 

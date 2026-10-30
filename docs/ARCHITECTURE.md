@@ -35,6 +35,7 @@ clearmark/
 │   │   ├── filters.ts         # Pure filter/sort/collect helpers
 │   │   ├── drag.ts            # Shared drag MIME type
 │   │   ├── useUndo.ts         # 10 second undo slot
+│   │   ├── useWindowedList.ts # Visible-row range + measured row heights
 │   │   └── components/        # FolderTree, BookmarkList, BookmarkForm, FolderPicker,
 │   │                          # SearchBar, CleanupPanels, ExtensionHub, TransferPanel,
 │   │                          # Feedback (bulk bar, progress, toast), ui (modal, avatar)

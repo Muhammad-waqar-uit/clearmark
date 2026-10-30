@@ -58,8 +58,14 @@
 
 - **Favicons are not requested.** Rows use a deterministic letter tile instead of remote
   favicon URLs, so the extension makes no network requests while browsing bookmarks.
-- **Very large trees** (tens of thousands of bookmarks) render every filtered row; there
-  is no virtual list yet. Search and filters still apply, but scrolling may feel heavy.
+- **Very large trees are windowed, not paginated.** Only the rows near the viewport are
+  in the DOM, with spacer elements standing in for the rest, so opening a folder with tens
+  of thousands of bookmarks stays cheap. Rows are measured as they mount, so wrapped tags
+  or an open tag editor do not shift the scroll position.
+- **The tag/note editor turns windowing off** while it is open (one row, so the cost is
+  negligible); closing it returns the list to windowed rendering.
+- **Search and filters run over every bookmark**, not just the rendered window, so a match
+  far down the list is still found.
 - **Dark mode uses the `dark` class** on `<html>`, applied when a page loads. System
   changes are picked up while a page is open.
 - **Accessibility**: dialogs trap Escape and return focus by click, but they do not yet
