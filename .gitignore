@@ -4,15 +4,10 @@ node_modules/
 # Ignore environment files
 .env*
 .env.local*
-*.orig
 
 # Ignore build artifacts
 dist/
-*.tgz
 
 # Ignore IDE files
 .vscode/
 .idea/
-
-# Ignore git snapshots
-.git/
