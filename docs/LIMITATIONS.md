@@ -22,6 +22,10 @@
   bookmarks are excluded from deletion, and Chrome does not allow renaming the root.
 - **Drag-and-drop moves bookmarks only**, onto folders in the sidebar. Reordering within
   a folder is not supported.
+- **The popup only reads the tab it was opened on.** It relies on `activeTab`, which is
+  granted when you click the toolbar icon, so the extension never holds a standing
+  browsing-history permission. Opening the popup is what grants it; the manager page
+  cannot read other tabs at all.
 - **The manager is a full page**, not the popup; Chrome opens it from the popup or the
   options page.
 

@@ -25,6 +25,10 @@ export function Popup() {
   useEffect(() => {
     let active = true
     void (async () => {
+      // `url` and `title` are only present because the manifest requests
+      // `activeTab`: opening the popup is an invocation, so the grant covers
+      // this tab. There is no `tabs` permission, so Chrome shows no
+      // browsing-history warning.
       const [tree, stored, current] = await Promise.all([
         getBookmarkTree(),
         getStorage(),

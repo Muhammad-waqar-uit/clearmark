@@ -53,9 +53,11 @@ See [docs/FEATURES.md](docs/FEATURES.md) for details and
 
 ## Permissions
 
-`bookmarks`, `storage`, `tabs`, `management`, plus optional `<all_urls>` which is
-requested only when you run a dead link check. Everything stays in the browser; there is
-no server and no analytics page. The uninstall URL is empty unless you set one.
+`bookmarks`, `storage`, `management`, `activeTab`, plus optional `<all_urls>` which is
+requested only when you run a dead link check. `activeTab` covers the popup's "add current
+page" without the `tabs` permission, so Chrome shows **no "read your browsing history"
+warning** at install time. Everything stays in the browser; there is no server and no
+analytics page. The uninstall URL is empty unless you set one.
 
 ## Tech stack
 

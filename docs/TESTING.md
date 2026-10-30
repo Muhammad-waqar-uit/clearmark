@@ -25,12 +25,12 @@ pnpm check          # typecheck, lint, tests, build
 | Warning | Reason |
 |---------|--------|
 | Read and change your bookmarks | `bookmarks` |
-| Read your browsing history | `tabs` — used only to get the current tab's title/URL in the popup |
 | Manage your apps, extensions, and themes | `management` |
+| (nothing about browsing history) | the popup uses `activeTab`, not `tabs`, so no history warning should appear |
 | (nothing about all sites) | `<all_urls>` is optional and only asked for during a link check |
 
-If Chrome warns about all sites at install time, the optional permission was declared
-wrong — check `manifest.json`.
+If Chrome warns about browsing history or all sites at install time, a permission was
+declared wrong — check `manifest.json`.
 
 ## 2. Popup
 
@@ -40,8 +40,9 @@ Click the toolbar icon.
 - [ ] Typing filters the list to at most 10 results; a nonsense query shows
       "No bookmarks match …".
 - [ ] Clicking a result opens that URL in a new tab and closes the popup.
-- [ ] The bottom card shows the current tab's title, and **Add page** saves it to the
-      chosen folder ("Saved to your bookmarks." appears).
+- [ ] The bottom card shows the current tab's title — this proves the `activeTab` grant is
+      working — and **Add page** saves it to the chosen folder ("Saved to your bookmarks."
+      appears).
 - [ ] **Add page** is disabled on a `chrome://` page ("This tab cannot be bookmarked").
 - [ ] **Settings** opens the options page; **Open full manager** opens the manager tab.
 
