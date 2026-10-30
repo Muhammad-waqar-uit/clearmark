@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2022",
+    "useDefineForClassFields": true,
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "moduleResolution": "bundler",
@@ -8,19 +9,17 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
-    "outDir": "./dist",
-    "rootDir": "./",
+    "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
     "resolveJsonModule": true,
-    "types": ["vite/client"]
+    "types": ["vite/client", "chrome", "node"]
   },
-  "include": ["**/*.ts", "**/*.tsx", "**/*.vue", "**/*.html"],
+  "include": ["src", "tests", "vite.config.ts", "vitest.config.ts"],
   "exclude": ["node_modules", "dist"]
 }

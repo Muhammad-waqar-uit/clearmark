@@ -3,14 +3,16 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "description": "Manage all your bookmarks and browser extensions from one place.",
   "scripts": {
-    "dev": "plasmo dev",
-    "build": "plasmo build",
-    "lint": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
+    "dev": "vite build --watch --mode development",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx,.cjs",
     "test": "vitest run",
-    "test:ui": "vitest run --ui",
-    "preview": "plasmo preview",
-    "prepare": "husky"
+    "prepare": "husky",
+    "icons": "node scripts/generate-icons.mjs",
+    "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm build"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -18,6 +20,7 @@
   },
   "devDependencies": {
     "@types/chrome": "^0.0.258",
+    "@types/node": "^22.10.2",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^8.72.1",
@@ -30,7 +33,6 @@
     "eslint-plugin-react": "^7.34.3",
     "husky": "^9.1.7",
     "jsdom": "^30.1.3",
-    "plasmo": "^0.83.0",
     "postcss": "^8.4.38",
     "prettier": "^3.3.2",
     "tailwindcss": "^3.4.4",

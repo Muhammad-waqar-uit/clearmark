@@ -1,61 +1,73 @@
-// Service worker for Clearmark extension
-// Handles bookmark events and uninstall flow
+import { DEFAULT_SETTINGS, getStorage, removeBookmarkMeta } from '../lib/storage'
 
-chrome.bookmarks.onCreated.add((bookmark) => {
-  // Notify any listeners about new bookmark
-  console.log('Bookmark created:', bookmark.title)
-})
+/** Notify open extension pages that bookmark or extension data changed. */
+function notifyPages(source: 'bookmarks' | 'extensions'): void {
+  chrome.runtime.sendMessage({ type: 'clearmark:data-changed', source }).catch(() => undefined)
+}
 
-chrome.bookmarks.onRemoved.add((id, removeInfo) => {
-  // Clean up metadata when bookmark is removed
-  chrome.storage.local.remove([id])
-})
+/** `setUninstallURL` is callback-only, so wrap it in a promise. */
+function setUninstallUrl(url: string): Promise<void> {
+  return new Promise((resolve) => {
+    chrome.runtime.setUninstallURL(url, () => resolve())
+  })
+}
 
-chrome.bookmarks.onChanged.add((id, changeInfo) => {
-  // Handle bookmark changes
-  if (changeInfo.title || changeInfo.url) {
-    console.log('Bookmark changed:', id, changeInfo)
+async function syncUninstallUrl(): Promise<void> {
+  try {
+    const { settings } = await getStorage()
+    const url = settings.uninstallUrl.trim()
+    if (!url || !/^https?:\/\//.test(url)) {
+      await setUninstallUrl('')
+      return
+    }
+    await setUninstallUrl(url)
+  } catch {
+    // An invalid or unreachable URL must never break the service worker.
   }
-})
-
-chrome.bookmarks.onMoved.add((id, moveInfo) => {
-  // Handle bookmark moves
-  console.log('Bookmark moved:', id, moveInfo)
-})
-
-// Self-uninstall flow
-chrome.runtime.onInstanced.add(() => {
-  // Called when extension is already running
-})
-
-// Handle uninstall URL
-if (chrome.runtime.setUninstallURL) {
-  chrome.runtime.setUninstallURL('/uninstall.html')
 }
 
-// Listen for management events to keep list live
-chrome.management.onInstalled.add(() => {
-  chrome.storage.local.get(['settings'], (result) => {
-    // Refresh extension list
-  })
+chrome.runtime.onInstalled.addListener((details) => {
+  if (details.reason === 'install') {
+    void chrome.storage.local.set({
+      settings: DEFAULT_SETTINGS,
+      meta: {},
+      wantedExtensions: [],
+    })
+  }
+  void syncUninstallUrl()
 })
 
-chrome.management.onUninstalled.add(() => {
-  chrome.storage.local.get(['meta'], (result) => {
-    // Clean up metadata for uninstalled extension
-  })
+chrome.runtime.onStartup.addListener(() => {
+  void syncUninstallUrl()
 })
 
-chrome.management.onEnabled.add(() => {
-  chrome.storage.local.get(['meta'], (result) => {
-    // Handle extension enabled
-  })
+chrome.runtime.onMessage.addListener((message: unknown, _sender, sendResponse) => {
+  if (
+    typeof message === 'object' &&
+    message !== null &&
+    (message as { type?: string }).type === 'clearmark:settings-updated'
+  ) {
+    void syncUninstallUrl().then(() => sendResponse({ ok: true }))
+    return true
+  }
+  return false
 })
 
-chrome.management.onDisabled.add(() => {
-  chrome.storage.local.get(['meta'], (result) => {
-    // Handle extension disabled
-  })
-}
+// Remove tags/notes stored for a bookmark when the bookmark is deleted.
+chrome.bookmarks.onRemoved.addListener((id, removeInfo) => {
+  if (removeInfo.node.url) {
+    void removeBookmarkMeta(id)
+  }
+  notifyPages('bookmarks')
+})
 
-export {}
+chrome.bookmarks.onCreated.addListener(() => notifyPages('bookmarks'))
+chrome.bookmarks.onChanged.addListener(() => notifyPages('bookmarks'))
+chrome.bookmarks.onMoved.addListener(() => notifyPages('bookmarks'))
+chrome.bookmarks.onChildrenReordered.addListener(() => notifyPages('bookmarks'))
+chrome.bookmarks.onImportEnded.addListener(() => notifyPages('bookmarks'))
+
+chrome.management.onInstalled.addListener(() => notifyPages('extensions'))
+chrome.management.onUninstalled.addListener(() => notifyPages('extensions'))
+chrome.management.onEnabled.addListener(() => notifyPages('extensions'))
+chrome.management.onDisabled.addListener(() => notifyPages('extensions'))
