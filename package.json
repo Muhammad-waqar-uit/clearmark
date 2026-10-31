@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Manage all your bookmarks and browser extensions from one place.",
+  "description": "Privacy-first Chrome extension: unified bookmark & extension manager. Organize bookmarks, configure extensions, undo deletions, check dead links, import/export HTML, drag‑drop reordering, light/dark themes — entirely on‑device, no analytics, no telemetry.",
   "scripts": {
     "dev": "vite build --watch --mode development",
     "build": "vite build",

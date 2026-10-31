@@ -3,7 +3,7 @@
   "name": "Clearmark: Bookmark & Extension Manager",
   "short_name": "Clearmark",
   "version": "0.1.0",
-  "description": "Manage all your bookmarks and browser extensions from one place.",
+  "description": "Privacy-first Chrome extension: unified bookmark & extension manager. Organize bookmarks, configure extensions, undo deletions, check dead links, import/export HTML, drag‑drop reordering, light/dark themes — entirely on‑device, no analytics, no telemetry.",
   "minimum_chrome_version": "116",
   "permissions": ["bookmarks", "storage", "management", "activeTab"],
   "optional_host_permissions": ["<all_urls>"],
