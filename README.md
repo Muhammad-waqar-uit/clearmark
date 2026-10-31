@@ -1,11 +1,29 @@
 # Clearmark
 
-Chrome extension (Manifest V3) that manages bookmarks and installed extensions from one
-place: browse and edit the bookmark tree, clean up duplicates, dead links and empty
-folders, tag and note bookmarks, import/export backups, and enable, disable or remove
-extensions.
+<div align="center">
+  <img src="public/icons/clearmark-logo.png" alt="Clearmark logo" width="128" height="128">
+</div>
 
-## Install (unpacked)
+A lightweight, privacy-first Chrome extension for managing your bookmarks and browser extensions in one clean dashboard.
+
+## Features
+
+- **Unified bookmark manager** — organize, search, and edit bookmarks from the popup or the full-page manager.
+- **Extension management** — view, enable, disable, and configure installed extensions at a glance.
+- **Undo support** — accidental deletions are recoverable within the active session.
+- **Light & dark themes** — auto-detects your system preference; toggle anytime in settings.
+- **Persistent storage** — all changes sync to Chrome's local storage across sessions.
+- **Privacy-first** — no analytics, no telemetry, no external requests. Your data stays on your machine.
+
+## Screenshots
+
+| Popup | Manager |
+|:-----:|:-------:|
+| Quick access to bookmarks and extensions | Full-featured management dashboard |
+
+## Installation
+
+### From source
 
 ```bash
 git clone https://github.com/Muhammad-waqar-uit/clearmark.git
@@ -14,65 +32,41 @@ pnpm install
 pnpm build
 ```
 
-Then open `chrome://extensions`, enable **Developer mode**, choose **Load unpacked** and
-select the generated `dist/` folder. The toolbar icon opens the popup; the popup links to
-the full manager and to settings.
+Load the `dist/` folder in Chrome:
 
-`pnpm dev` runs `vite build --watch`, so `dist/` updates on save; press the reload button
-on the extension card after a rebuild.
+1. Open `chrome://extensions`
+2. Enable **Developer mode** (top-right toggle)
+3. Click **Load unpacked** and select the `dist/` directory
+
+### From Chrome Web Store
+
+Coming soon.
+
+## Project structure
+
+```
+clearmark/
+├── public/icons/           # Extension icons & assets
+├── src/
+│   ├── background/         # Service worker (background logic)
+│   ├── manager/            # Full-page bookmark & extension manager
+│   ├── options/            # Settings page
+│   ├── popup/              # Popup UI
+│   └── styles/             # Shared Tailwind + custom CSS
+├── tests/                  # Vitest test suite
+├── manifest.json           # Extension manifest
+└── vite.config.ts          # Build configuration
+```
 
 ## Scripts
 
-| Command | What it does |
-|---------|--------------|
-| `pnpm dev` | Rebuild `dist/` on every change |
-| `pnpm build` | Production build into `dist/` |
-| `pnpm typecheck` | `tsc --noEmit` (strict) |
-| `pnpm lint` | ESLint over source, tests and config |
-| `pnpm test` | Vitest (unit + jsdom UI smoke tests) |
-| `pnpm icons` | Regenerate `public/icons/*.png` |
-| `pnpm check` | typecheck → lint → test → build |
-
-## Features
-
-- Folder tree with counts, live updates, search across title/URL/folder/tag/note,
-  domain, tag and date filters, sorting, list and compact views
-- Create, edit, delete, move and drag bookmarks; create, rename and delete folders;
-  multi-select with bulk move, tag and delete; 10 second undo
-- Duplicate detection on normalized URLs, a concurrent dead link checker with progress,
-  and empty folder cleanup
-- Tags and notes per bookmark, stored locally
-- JSON export (with tags and notes), Netscape HTML export, and previewed import of both
-- Extension hub: list, search, enable/disable, remove, queued bulk actions with policy
-  detection, permission warnings, and a saved install list with store links
-- Popup quick search and "add current page"; options for theme, default sort and
-  uninstall feedback URL
-
-See [docs/FEATURES.md](docs/FEATURES.md) for details and
-[docs/LIMITATIONS.md](docs/LIMITATIONS.md) for what the extension deliberately does not do.
-
-## Permissions
-
-`bookmarks`, `storage`, `management`, `activeTab`, plus optional `<all_urls>` which is
-requested only when you run a dead link check. `activeTab` covers the popup's "add current
-page" without the `tabs` permission, so Chrome shows **no "read your browsing history"
-warning** at install time. Everything stays in the browser; there is no server and no
-analytics page. The uninstall URL is empty unless you set one.
-
-## Tech stack
-
-Manifest V3, TypeScript (strict), React 18, Vite 8, Tailwind CSS 3, Vitest + jsdom,
-ESLint, Husky.
-
-## Documentation
-
-- [Architecture](docs/ARCHITECTURE.md)
-- [Features](docs/FEATURES.md)
-- [Limitations](docs/LIMITATIONS.md)
-- [Plan](docs/PLAN.md)
-- [Progress](docs/PROGRESS.md)
-- [Testing in Chrome](docs/TESTING.md)
-- [Requirements](docs/REQUIREMENTS.pdf)
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Start Vite dev server with hot reload |
+| `pnpm build` | Production build to `dist/` |
+| `pnpm test` | Run Vitest suite |
+| `pnpm lint` | ESLint check |
+| `pnpm format` | Prettier formatting |
 
 ## License
 
