@@ -3,3 +3,6 @@ dist/
 coverage/
 .env*
 .vscode
+# TypeScript sources live in .ts/.tsx; .js files are build artifacts.
+src/**/*.js
+tests/**/*.js
