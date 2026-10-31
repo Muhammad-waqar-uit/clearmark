@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Icon } from '../lib/Icon'
 import {
   createBookmark,
   flattenBookmarks,
@@ -94,7 +95,7 @@ export function Popup() {
   return (
     <div className="flex w-[360px] flex-col gap-2 p-3">
       <div className="flex items-center gap-2">
-        <span aria-hidden="true">🧹</span>
+        <Icon name="broom" className="h-5 w-5 text-brand-600 dark:text-brand-300" />
         <strong className="text-sm">Clearmark</strong>
         <button
           type="button"

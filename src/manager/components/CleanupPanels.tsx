@@ -11,6 +11,7 @@ import { findEmptyFolders } from '../../lib/emptyFolders'
 import { checkBookmarks, ensureLinkCheckPermission } from '../../lib/linkcheck'
 import type { FlatBookmark, LinkCheckResult } from '../../lib/types'
 import { EmptyState, LetterAvatar } from './ui'
+import { Icon } from '../../lib/Icon'
 import { Notice, ProgressBar } from './Feedback'
 
 function formatDate(timestamp: number): string {
@@ -149,12 +150,17 @@ export function DeadLinksPanel({ bookmarks, onDeleteBookmarks, onOpen }: DeadLin
   const [error, setError] = useState('')
   const cancelled = useRef(false)
 
-  // Refresh results when bookmarks change (after a delete) so stale entries drop out.
+  // After a delete, drop stale rows so the user doesn't see removed bookmarks.
+  // Keep the rest of the results alive so the user can keep deleting without re-running the check.
+  const keptIds = useMemo(() => new Set(bookmarks.map((b) => b.id)), [bookmarks])
   useEffect(() => {
-    setResults(null)
-    setProgress({ done: 0, total: 0 })
-    setError('')
-  }, [bookmarks])
+    setResults((prev) => (prev ? prev.filter((r) => keptIds.has(r.id)) : null))
+    setProgress((prev) =>
+      prev.total > 0
+        ? { ...prev, total: Math.min(prev.done, bookmarks.length), done: Math.min(prev.done, bookmarks.length) }
+        : prev
+    )
+  }, [bookmarks, keptIds])
 
   const start = (): void => {
     void (async () => {
@@ -211,14 +217,14 @@ export function DeadLinksPanel({ bookmarks, onDeleteBookmarks, onOpen }: DeadLin
         className="btn btn-ghost px-2 py-1 text-xs"
         onClick={() => onOpen(result.url)}
       >
-        Open
+        <Icon name="open" className="h-3.5 w-3.5" /> Open
       </button>
       <button
         type="button"
         className="btn btn-ghost px-2 py-1 text-xs text-red-600 dark:text-red-400"
         onClick={() => void onDeleteBookmarks([result.id])}
       >
-        Delete
+        <Icon name="trash" className="h-3.5 w-3.5" /> Delete
       </button>
     </li>
   )

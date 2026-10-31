@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Icon } from '../../lib/Icon'
 import type { FolderNode } from '../../lib/types'
 import { DRAG_TYPE } from '../drag'
 
@@ -68,7 +69,7 @@ export function FolderTree({
             onClick={() => toggle(node.id)}
             aria-label={isOpen ? `Collapse ${node.title}` : `Expand ${node.title}`}
           >
-            {isOpen ? '▾' : '▸'}
+            <Icon name={isOpen ? 'chevron-down' : 'chevron-right'} className="h-3 w-3" />
           </button>
           <button
             type="button"
@@ -76,7 +77,7 @@ export function FolderTree({
             onClick={() => onSelect(node.id)}
             aria-current={isSelected ? 'true' : undefined}
           >
-            <span aria-hidden="true">📁</span>
+            <Icon name="folder" className="h-4 w-4 text-slate-400" />
             <span className="truncate">{node.title}</span>
           </button>
           <span
@@ -106,7 +107,7 @@ export function FolderTree({
         onClick={() => onSelect('all')}
         aria-current={selectedFolder === 'all' ? 'true' : undefined}
       >
-        <span aria-hidden="true">🗂️</span>
+        <Icon name="all-folders" className="h-4 w-4 text-slate-400" />
         <span className="flex-1">All bookmarks</span>
         <span
           className={`rounded px-1 text-[11px] ${

@@ -26,6 +26,7 @@ import { BookmarkForm } from './components/BookmarkForm'
 import { FolderPicker } from './components/FolderPicker'
 import { FolderTree } from './components/FolderTree'
 import { SearchBar } from './components/SearchBar'
+import { Icon } from '../lib/Icon'
 import { Modal } from './components/ui'
 import { BulkBar, UndoToast } from './components/Feedback'
 import { DuplicatesPanel, DeadLinksPanel, EmptyFoldersPanel } from './components/CleanupPanels'
@@ -283,7 +284,9 @@ export function ManagerPage() {
     <div className="flex min-h-screen flex-col">
       <header className="border-b border-slate-200 bg-white px-4 py-2 dark:border-slate-800 dark:bg-slate-900">
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-base font-semibold">🧹 Clearmark</h1>
+          <h1 className="flex items-center gap-2 text-base font-semibold">
+  <Icon name="broom" className="h-5 w-5 text-brand-600 dark:text-brand-300" /> Clearmark
+</h1>
           <nav className="flex flex-wrap gap-1" aria-label="Sections">
             {(
               [
@@ -312,14 +315,14 @@ export function ManagerPage() {
                   className="btn"
                   onClick={() => setDialog({ kind: 'folder', parentId: folderTarget })}
                 >
-                  New folder
+                  <Icon name="folder" className="h-4 w-4" /> New folder
                 </button>
                 <button
                   type="button"
                   className="btn btn-primary"
                   onClick={() => setDialog({ kind: 'create', parentId: folderTarget })}
                 >
-                  New bookmark
+                  <Icon name="plus" className="h-4 w-4" /> New bookmark
                 </button>
               </>
             ) : null}
@@ -329,7 +332,13 @@ export function ManagerPage() {
               onClick={cycleTheme}
               title={`Theme: ${settings.theme}`}
             >
-              {settings.theme === 'dark' ? '🌙' : settings.theme === 'light' ? '☀️' : '🖥️'}
+              {settings.theme === 'dark' ? (
+  <Icon name="moon" className="h-4 w-4" />
+) : settings.theme === 'light' ? (
+  <Icon name="sun" className="h-4 w-4" />
+) : (
+  <Icon name="monitor" className="h-4 w-4" />
+)}
             </button>
             <button
               type="button"

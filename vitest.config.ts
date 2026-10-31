@@ -5,5 +5,7 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     root: './',
+    // .js test files are stale duplicates of the .ts sources; only the typed copies run.
+    exclude: ['**/*.js'],
   },
 })

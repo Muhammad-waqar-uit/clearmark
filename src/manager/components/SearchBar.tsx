@@ -1,3 +1,4 @@
+import { Icon } from '../../lib/Icon'
 import type { DateFilter, ViewMode } from '../filters'
 import type { SortKey } from '../../lib/types'
 
@@ -41,9 +42,7 @@ export function SearchBar({
     <div className="card p-3">
       <div className="flex flex-wrap items-center gap-2">
         <div className="relative min-w-[220px] flex-1">
-          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-400" aria-hidden="true">
-            🔍
-          </span>
+          <Icon name="search" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-400" />
           <label htmlFor="bookmark-search" className="sr-only">
             Search bookmarks
           </label>

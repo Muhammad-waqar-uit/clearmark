@@ -54,5 +54,7 @@ module.exports = {
       },
     },
   ],
-  ignorePatterns: ['dist', 'node_modules', 'scripts', 'public'],
+  // .js files here are stale build artifacts alongside the .ts sources (see
+  // .gitignore); the real sources are typed and already covered by the rules.
+  ignorePatterns: ['dist', 'node_modules', 'scripts', 'public', '**/*.js'],
 }

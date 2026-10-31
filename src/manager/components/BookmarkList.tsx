@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { Icon } from '../../lib/Icon'
 import { domainOf } from '../../lib/bookmarks'
 import type { BookmarkMeta } from '../../lib/types'
 import { DRAG_TYPE } from '../drag'
@@ -158,7 +159,8 @@ export function BookmarkList({
                   <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-slate-400 dark:text-slate-500">
                     {bookmark.folderPath ? (
                       <span className="truncate" title={bookmark.folderPath}>
-                        📁 {bookmark.folderPath}
+                        <Icon name="folder" className="mr-1 h-3 w-3 text-slate-400" />{' '}
+                        {bookmark.folderPath}
                       </span>
                     ) : null}
                     {bookmark.meta.tags.map((tag) => (
@@ -167,7 +169,9 @@ export function BookmarkList({
                       </span>
                     ))}
                     {bookmark.meta.note ? (
-                      <span title={bookmark.meta.note}>📝 note</span>
+                      <span title={bookmark.meta.note}>
+                        <Icon name="note" className="mr-0.5 h-3 w-3" /> note
+                      </span>
                     ) : null}
                     {view === 'list' && bookmark.dateAdded > 0 ? (
                       <time dateTime={new Date(bookmark.dateAdded).toISOString()}>
@@ -185,7 +189,7 @@ export function BookmarkList({
                     aria-label={`Edit ${bookmark.title}`}
                     title="Edit bookmark"
                   >
-                    ✏️
+                    <Icon name="edit" className="h-4 w-4" />
                   </button>
                   <button
                     type="button"
@@ -194,7 +198,7 @@ export function BookmarkList({
                     aria-label={`Edit tags and note for ${bookmark.title}`}
                     title="Tags and note"
                   >
-                    🏷️
+                    <Icon name="tag" className="h-4 w-4" />
                   </button>
                   <button
                     type="button"
@@ -203,7 +207,7 @@ export function BookmarkList({
                     aria-label={`Delete ${bookmark.title}`}
                     title="Delete bookmark"
                   >
-                    🗑️
+                    <Icon name="trash" className="h-4 w-4" />
                   </button>
                 </div>
               </div>
