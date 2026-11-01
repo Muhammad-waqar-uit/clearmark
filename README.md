@@ -100,18 +100,33 @@ Clearmark runs entirely on-device. It uses only Chrome's built-in APIs (`bookmar
 ### Automated releases
 Releases are automated via GitHub Actions. When you push a tag `vX.Y.Z`, the workflow:
 1. Builds the extension (`pnpm build`)
-2. Creates a GitHub Release with the built ZIP artifact
-3. Generates release notes from commits since last tag
-4. (Optional) Publishes to Chrome Web Store if secrets are configured
+2. Zips the `dist/` output as `clearmark-vX.Y.Z.zip`
+3. Creates a GitHub Release with the ZIP artifact and auto-generated notes
 
 ### Manual release
-```bash
-# Bump version in package.json and manifest.json
-npm version patch|minor|major  # or edit manually
+Use this when the automated workflow is not available (e.g. local tag only, no CI access).
 
-# Push tag to trigger release
-git push && git push --tags
+```bash
+# 1. Bump version in package.json and manifest.json
+npm version patch|minor|major  # or edit both files manually
+
+# 2. Build the extension locally
+pnpm build
+
+# 3. Create the release ZIP
+mkdir -p release
+zip -r release/clearmark-v$(git describe --tags --abbrev=0).zip dist/
+
+# 4. Commit and push the version bump
+git commit -am "chore: release v$(git describe --tags --abbrev=0)"
+git push
+
+# 5. Create and push the tag
+git tag -a vX.Y.Z -m "Release vX.Y.Z"
+git push origin vX.Y.Z
 ```
+
+Then attach `release/*.zip` to the GitHub Release at `github.com/Muhammad-waqar-uit/clearmark/releases/new?tag=vX.Y.Z`.
 
 ## License
 
