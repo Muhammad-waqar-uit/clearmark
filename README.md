@@ -95,6 +95,24 @@ clearmark/
 
 Clearmark runs entirely on-device. It uses only Chrome's built-in APIs (`bookmarks`, `storage`, `management`, `activeTab`) — no analytics, no telemetry, no network calls outside your own actions.
 
+## Releasing
+
+### Automated releases
+Releases are automated via GitHub Actions. When you push a tag `vX.Y.Z`, the workflow:
+1. Builds the extension (`pnpm build`)
+2. Creates a GitHub Release with the built ZIP artifact
+3. Generates release notes from commits since last tag
+4. (Optional) Publishes to Chrome Web Store if secrets are configured
+
+### Manual release
+```bash
+# Bump version in package.json and manifest.json
+npm version patch|minor|major  # or edit manually
+
+# Push tag to trigger release
+git push && git push --tags
+```
+
 ## License
 
 MIT
