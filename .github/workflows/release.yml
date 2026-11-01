@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      packages: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -33,7 +32,7 @@ jobs:
       - name: Create ZIP archive
         run: |
           mkdir -p release
-          zip -r release/clearmark-v${{ github.ref_name }}.zip dist/
+          zip -r release/clearmark-${{ github.ref_name }}.zip dist/
 
       - name: Create release
         uses: softprops/action-gh-release@v2
@@ -41,11 +40,3 @@ jobs:
           files: release/*.zip
           generate_release_notes: true
           tag_name: ${{ github.ref_name }}
-
-      - name: Publish to Chrome Web Store
-        uses: google-actions/publish-chrome-extension@v1
-        with:
-          release: release/*.zip
-          client-id: ${{ secrets.CHROME_CLIENT_ID }}
-          client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
-          refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
