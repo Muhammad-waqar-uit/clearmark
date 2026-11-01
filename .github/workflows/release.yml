@@ -20,7 +20,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'pnpm'
+
+      - name: Enable pnpm
+        run: corepack enable pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -40,10 +42,10 @@ jobs:
           generate_release_notes: true
           tag_name: ${{ github.ref_name }}
 
-      - name: Publish to Chrome Web Store (optional)
-        uses: chromaui/action@v1
+      - name: Publish to Chrome Web Store
+        uses: google-actions/publish-chrome-extension@v1
         with:
-          extension-id: ${{ secrets.CHROME_EXTENSION_ID }}
+          release: release/*.zip
           client-id: ${{ secrets.CHROME_CLIENT_ID }}
           client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
           refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
